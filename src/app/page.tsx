@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { useGradientGenerator } from '@/hooks/useGradientGenerator';
 import { colorPresets } from '@/lib/constants';
 import { colorToParam } from '@/lib/utils';
-import { Download, RefreshCw, Plus, Trash2, Palette, Sparkles, Layers, Code, Zap } from 'lucide-react';
+import { ColorWheel } from '@/components/ColorWheel';
+import { Download, RefreshCw, Plus, Trash2, Palette, Sparkles, Layers, Code, Zap, SlidersHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function GradientGenerator() {
@@ -26,16 +27,35 @@ export default function GradientGenerator() {
   const [newColor, setNewColor] = useState('');
   const [apiLinkCopied, setApiLinkCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  
+  // 色轮相关状态
+  const [primaryColor, setPrimaryColor] = useState(colors[0] || '#5135FF');
+  const [secondaryColor, setSecondaryColor] = useState(colors[1] || '#FF5828');
+  const [showColorWheel, setShowColorWheel] = useState(true);
 
   useEffect(() => {
     setMounted(true);
     generateGradient();
   }, [generateGradient]);
 
+  // 当色轮颜色变化时，更新颜色列表
+  useEffect(() => {
+    const newColors = [primaryColor, secondaryColor];
+    // 保留其他颜色（如果有）
+    if (colors.length > 2) {
+      newColors.push(...colors.slice(2));
+    }
+    setColors(newColors);
+  }, [primaryColor, secondaryColor]);
+
   const handleColorChange = (index: number, color: string) => {
     const newColors = [...colors];
     newColors[index] = color;
     setColors(newColors);
+    
+    // 同步更新色轮的主色或次色
+    if (index === 0) setPrimaryColor(color);
+    if (index === 1) setSecondaryColor(color);
   };
 
   const addColor = () => {
@@ -49,11 +69,17 @@ export default function GradientGenerator() {
     if (colors.length > 1) {
       const newColors = colors.filter((_, i) => i !== index);
       setColors(newColors);
+      
+      // 同步更新色轮
+      if (index === 0 && newColors.length > 0) setPrimaryColor(newColors[0]);
+      if (index === 1 && newColors.length > 1) setSecondaryColor(newColors[1]);
     }
   };
 
   const applyPreset = (preset: typeof colorPresets[0]) => {
     setColors(preset.colors);
+    if (preset.colors.length > 0) setPrimaryColor(preset.colors[0]);
+    if (preset.colors.length > 1) setSecondaryColor(preset.colors[1]);
   };
 
   const generateApiLink = () => {
@@ -209,11 +235,42 @@ export default function GradientGenerator() {
               </div>
             </div>
 
-            {/* Colors */}
+            {/* 新版色彩选择模块 - 色轮 */}
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-border">
                 <div className="flex items-center gap-2">
                   <Palette className="w-5 h-5 text-primary" />
+                  <h2 className="font-display font-semibold text-lg">Color Wheel</h2>
+                </div>
+                <button
+                  onClick={() => setShowColorWheel(!showColorWheel)}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showColorWheel ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              
+              {showColorWheel && (
+                <ColorWheel
+                  primaryColor={primaryColor}
+                  secondaryColor={secondaryColor}
+                  onPrimaryChange={setPrimaryColor}
+                  onSecondaryChange={setSecondaryColor}
+                  onColorsChange={(newColors) => {
+                    if (newColors.length >= 2) {
+                      const fullColors = [...newColors, ...colors.slice(2)].slice(0, 8);
+                      setColors(fullColors);
+                    }
+                  }}
+                />
+              )}
+            </div>
+
+            {/* Colors - 颜色列表 */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-5 h-5 text-primary" />
                   <h2 className="font-display font-semibold text-lg">Colors</h2>
                 </div>
                 <span className="text-xs font-mono bg-muted px-2 py-1 rounded-md text-muted-foreground">
