@@ -10,10 +10,34 @@ A powerful Next.js application for creating stunning SVG gradient backgrounds wi
 - **API Integration**: Generate gradients programmatically via REST API
 - **SVG Export**: Download your creations as high-quality SVG files
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Interactive Color Wheel**: Select colors on an intuitive color wheel interface
+- **Dual Color Selection**: Choose two colors simultaneously for gradient creation
+- **Free Mode**: Complete freedom to select any colors you want
+- **Recommended Mode**: AI-powered color recommendations based on color theory
+- **Color Combinations**: Includes complementary, analogous, triadic, split complementary, and monochromatic combinations
 
 ## Getting Started
 
 Read the documentation at https://opennext.js.org/cloudflare.
+
+## Color Selector
+
+The application features an advanced color selection system with two modes:
+
+### Free Mode
+- Drag markers on the interactive color wheel to select colors
+- Two markers allow simultaneous selection of two colors
+- Use the color pickers for precise color input
+- Real-time preview shows the gradient between selected colors
+
+### Recommended Mode
+- Select a primary color
+- The system automatically recommends the best color combinations based on color theory:
+  - **Complementary**: High contrast, vibrant combination (opposite on color wheel)
+  - **Analogous**: Harmonious, similar hues (adjacent on color wheel)
+  - **Triadic**: Balanced, vibrant triangle (equidistant on color wheel)
+  - **Split Complementary**: High contrast with variety
+  - **Monochromatic**: Same hue, different shades
 
 ## Develop
 
